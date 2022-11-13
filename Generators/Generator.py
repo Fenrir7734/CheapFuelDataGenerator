@@ -19,6 +19,9 @@ DEFAULT_PASSWORD = "AQAAAAEAACcQAAAAEIx4l5FIMC2QHbCl94VCmPBY6//9LqJfoCifq8a5vxVD
 FUEL_STATION_COUNT = 300
 USERS_COUNT = 100
 
+MIN_FUEL_PRICE_COUNT = 50
+MAX_FUEL_PRICE_COUNT = 200
+
 
 USERS_START_INDEX = 100
 
@@ -121,7 +124,7 @@ def generate_fuel_types_at_station(fuel_stations):
 
 
 def generate_fuel_prices(fuel_type, fuel_station):
-    num_of_entries = random.randrange(20, 200)
+    num_of_entries = random.randrange(MIN_FUEL_PRICE_COUNT, MAX_FUEL_PRICE_COUNT)
     step = (fuel_type.max_price - fuel_type.min_price) / num_of_entries
     min_price = fuel_type.min_price
 
