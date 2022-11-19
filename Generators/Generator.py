@@ -7,11 +7,13 @@ from Models.Datasets.Services import Services as services
 from Models.Datasets.StationChains import StationChains as station_chains
 from Models.Datasets.FuelTypes import FuelTypes as fuel_types
 from Models.Datasets.Usernames import read_usernames
+from Models.Datasets.LoremIpsum import lorem_ipsum
 from Models.FuelPrice import FuelPrice
 from Models.FuelStation import FuelStation
 from Models.ServiceAtStations import ServiceAtStations
 from Models.FuelAtStation import FuelAtStation
 from Models.User import User
+from Models.Review import Review
 from datetime import datetime
 
 DEFAULT_PASSWORD = "AQAAAAEAACcQAAAAEIx4l5FIMC2QHbCl94VCmPBY6//9LqJfoCifq8a5vxVDbfk4CMwLB6JAL0kSDgj+kA=="
@@ -36,6 +38,7 @@ def run():
     fuel_stations = generate_fuel_stations()
     fuel_types_at_station, fuel_prices = generate_fuel_types_at_station(fuel_stations)
     services_at_station = generate_services_at_station(fuel_stations)
+    reviews = generate_comments(FUEL_STATION_COUNT)
 
     f = open("data.sql", "w+", encoding="utf-8")
 
@@ -47,6 +50,7 @@ def run():
     write_to_file(f, fuel_types_at_station)
     write_to_file(f, services_at_station)
     write_to_file(f, fuel_prices)
+    write_to_file(f, reviews)
 
     f.close()
 
@@ -150,4 +154,40 @@ def generate_fuel_prices(fuel_type, fuel_station):
         time += time_step
 
     return fuel_prices
+
+
+def generate_comments(fuel_station_count):
+    reviews = []
+    id = 0
+
+    for i in range(fuel_station_count):
+        has_reviews = random.randrange(0, 5) == 1
+
+        if not has_reviews:
+            continue
+
+        for j in range(USERS_START_INDEX, USERS_START_INDEX + USERS_COUNT):
+            has_reviews = random.randrange(0, 15) == 1
+
+            if not has_reviews:
+                continue
+
+            id += 1
+            content = get_review_content() if random.randrange(0, 4) == 1 else "NULL"
+            created_at = timeGenerator.next()
+            updated_at = timeGenerator.next() if random.randrange(0, 4) == 1 else timeGenerator.last()
+
+            review = Review(id, random.randrange(1, 5), content, i + 1, j, created_at, updated_at)
+            reviews.append(review)
+
+    return reviews
+
+
+def get_review_content():
+    random.shuffle(lorem_ipsum)
+    arr = lorem_ipsum[0:random.randrange(1, 3)]
+    return "'" + ''.join(arr).strip() + "'"
+
+
+
 
